@@ -88,7 +88,7 @@ module inst_memory(address, read_data);
   
   assign read_data = {data_memory[address], data_memory[address + 1], data_memory[address + 2], data_memory[address + 3]};
   
- endmodule
+endmodule
 
 module data_memory(clk, mem_write, mem_read, address, write_data, read_data);
   input clk, mem_read, mem_write;
@@ -152,8 +152,23 @@ module data_memory(clk, mem_write, mem_read, address, write_data, read_data);
 	data_memory[1017] = 8'b0;
 	data_memory[1018] = 8'b0;
 	data_memory[1019] = 8'd5;
-end
+  end
   
   assign read_data = (mem_read) ? {data_memory[address], data_memory[address + 1], data_memory[address + 2], data_memory[address + 3]} : 32'bz;
   
- endmodule
+endmodule
+
+module hazard(input [4 : 0] ID_Rs, ID_Rt, EX_Rt, input EX_mem_read, output reg controller_enable, IF_ID_enable, pc_write);
+	always @(ID_Rs, ID_Rt, EX_Rt, EX_mem_read) begin
+		if((EX_mem_read == 1) & (ID_Rs == EX_Rt | ID_Rt == EX_Rt)) begin
+			controller_enable = 0;
+			IF_ID_enable = 0;
+			pc_write = 0;
+		end
+		else begin
+			controller_enable = 1;
+			IF_ID_enable = 1;
+			pc_write = 1;
+		end
+	end
+endmodule
