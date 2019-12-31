@@ -172,3 +172,46 @@ module hazard(input [4 : 0] ID_Rs, ID_Rt, EX_Rt, input EX_mem_read, output reg c
 		end
 	end
 endmodule
+
+module forward(input [4 : 0] EX_Rs, M_Rd, EX_Rt, WB_Rd, input EX_reg_write, M_reg_write, WB_reg_write, output reg [1 : 0] sel1, sel2);
+	wire m_forward, wb_forward;
+	assign m_forward = (EX_reg_write === 1'b1) & (M_reg_write === 1'b1);
+	assign wb_forward = (EX_reg_write === 1'd1) & (WB_reg_write === 1'd1);
+	always @(EX_Rs, M_Rd, EX_Rt, WB_Rd, EX_reg_write, M_reg_write, WB_reg_write)begin
+		if(m_forward & (EX_Rs === M_Rd))
+			sel1 = (M_Rd == 0) ? 0 : 2'd2;
+		else if(wb_forward & (EX_Rs === WB_Rd))
+			sel1 = (WB_Rd == 0) ? 0 : 2'd1;
+		else
+			sel1 = 2'd0;
+		if(m_forward & (EX_Rt === M_Rd))
+			sel2 = (M_Rd == 0) ? 0 : 2'd2;
+		else if(wb_forward & (EX_Rt === WB_Rd))
+			sel2 = (WB_Rd == 0) ? 0 : 2'd1;
+		else
+			sel2 = 2'd0;
+	end
+endmodule
+
+module EX_M_reg(input clk, rst, input [31 : 0] alu_in, reg2_read_in, input [4 : 0] regdst_out_in, 
+  input mem_read_in, mem_write_in, reg_write_in,
+  mem_to_reg_in,
+  output reg [31 : 0] reg1_read_out, reg2_read_out, mem_address_out
+  , output reg [4 : 0] rt_out, rd_out, rs_out, output reg mem_read_out,
+   mem_write_out, reg_write_out, mem_to_reg_out, output reg [31 : 0] alu_out,
+   output reg [4 : 0] regdst_out_out);
+   
+endmodule
+
+module ALU(input [31 : 0] a, b, input [2 : 0] opc, output reg [31 : 0] w);
+  always @(opc, a, b) begin
+    case(opc)
+      0: w = a & b;
+      1: w = a | b;
+      2: w = a + b;
+      6: w = a - b;
+      7: w = (a < b);
+      default w = 32'bz;
+    endcase
+  end
+endmodule
