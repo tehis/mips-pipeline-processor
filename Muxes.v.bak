@@ -1,6 +1,6 @@
 `timescale 1ns/1ns
 module Mux2_31bits(input[31:0] input1, input2, input select, output[31:0] result);
-    assign result = (select == 0) ? input1:input2;
+    assign result = (select == 0) ? input1:inout2;
 endmodule
 
 module Mux2_1bits(input input1, input2, select, output result);
