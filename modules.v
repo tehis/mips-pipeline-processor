@@ -4,10 +4,9 @@ module adder(input [31 : 0] x, input[31:0]y, output [31 : 0] z);
   assign z = x+y;
 endmodule
 
-module comparator(input [31 : 0] a, input[31:0]b, output out);
+module is_equal(input [31 : 0] a, input[31:0]b, output out);
   assign out = (a == b);
 endmodule
-// TODO rename comprator to is_equal
 
 module PC(input clk, rst, pc_write, input [31 : 0] pc_in, output reg [31 : 0] pc_out);
   always @(posedge clk, posedge rst) begin
@@ -160,16 +159,10 @@ endmodule
 
 module hazard(input [4 : 0] ID_Rs, ID_Rt, EX_Rt, input EX_mem_read, output reg controller_enable, IF_ID_enable, pc_write);
 	always @(ID_Rs, ID_Rt, EX_Rt, EX_mem_read) begin
-		if((EX_mem_read == 1) & (ID_Rs == EX_Rt | ID_Rt == EX_Rt)) begin
-			controller_enable = 0;
-			IF_ID_enable = 0;
-			pc_write = 0;
-		end
-		else begin
-			controller_enable = 1;
-			IF_ID_enable = 1;
-			pc_write = 1;
-		end
+		if((EX_mem_read == 1) & (ID_Rs == EX_Rt | ID_Rt == EX_Rt))
+			{controller_enable,IF_ID_enable,pc_write} = 3'b0;
+		else
+			{controller_enable,IF_ID_enable,pc_write} = 3'b1;
 	end
 endmodule
 

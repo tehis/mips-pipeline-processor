@@ -22,7 +22,7 @@ module datapath(input clk, rst);
     wire [31 : 0] data1_in, data2_in, dst_adr_in, write_data;
     wire [4 : 0] Rs_in, Rt_in, Rd_in, write_reg;
     register_file RF(clk, rst, inst_out[25 : 21], inst_out[20 : 16], write_reg, write_data, WB_reg_write_out_M_WB, data1_in, data2_in);
-    comparator c(data1_in, data2_in, eq);
+    is_equal c(data1_in, data2_in, eq);
     adder a2(adder_pc_out, {inst_out[15], inst_out[15], inst_out[15], inst_out[15], inst_out[15], 
         inst_out[15], inst_out[15], inst_out[15], inst_out[15], inst_out[15], inst_out[15], 
         inst_out[15], inst_out[15], inst_out[15], inst_out[15 : 0], 2'b0}, branch_in);
