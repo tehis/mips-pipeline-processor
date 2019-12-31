@@ -199,11 +199,11 @@ endmodule
 module ALU(input [31 : 0] a, b, input [2 : 0] opc, output reg [31 : 0] w);
   always @(opc, a, b) begin
     case(opc)
-      0: w = a & b;
-      1: w = a | b;
+      1: w = a & b;
+      0: w = a | b;
       2: w = a + b;
-      6: w = a - b;
-      7: w = (a < b);
+      7: w = a - b;
+      6: w = (a < b);
       default w = 32'bz;
     endcase
   end
